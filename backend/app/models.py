@@ -17,7 +17,7 @@ class User(Base):
 class VaultEntry(Base):
     __tablename__ = "vault_entries"
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id"), index=True)
+    user_email = Column(String, ForeignKey("users.email"), index=True)
     site = Column(String)
     username = Column(String)
     encrypted_password = Column(LargeBinary)
