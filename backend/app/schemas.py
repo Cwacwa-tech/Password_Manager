@@ -1,12 +1,13 @@
 # backend/app/schemas.py
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, Field
 from typing import Optional
 import datetime
 
 class UserCreate(BaseModel):
     username: str 
     email: EmailStr
-    master_password: str
+    master_password: Optional[str] = Field(None, description="Leave empty to generate a password.")
+    generate_password: bool = Field(False, description="Set to True to generate a password.")
 
 class UserOut(BaseModel):
     id: int
@@ -28,6 +29,7 @@ class VaultEntryOut(BaseModel):
 
     class Config:
         orm_mode = True
+        
 class Token(BaseModel):
     access_token: str
     token_type: str
@@ -38,3 +40,10 @@ class TokenData(BaseModel):
 class UserLogin(BaseModel):
     email: EmailStr
     master_password: str
+
+class SharedUserCreate(BaseModel):
+    vault_entry_id: int
+    user_id: int
+
+    class Config:
+        orm_mode = True

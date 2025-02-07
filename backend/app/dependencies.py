@@ -3,12 +3,18 @@ from sqlalchemy.orm import sessionmaker, Session
 from sqlalchemy import create_engine
 from redis import Redis
 import os
+from typing import Optional
 
-from fastapi import Depends, HTTPException
+from fastapi import Depends, HTTPException, Query, status
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 from app.models import User, VaultEntry
 from app.utils.security import verify_access_token
+
+import secrets
+import string
+import json
+
 
 from dotenv import load_dotenv
 
@@ -38,8 +44,32 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
     payload = verify_access_token(token)
     if not payload:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
-    user_id = payload.get("sub")
-    user = db.query(User).filter(User.email == VaultEntry.user_email).first()
+
+    email = payload.get("sub")
+
+    # Retrieve session from Redis
+    session_data = redis_client.get(f"session:{email}")
+    if not session_data:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Session not found")
+
+
+    session = json.loads(session_data)
+
+    user = db.query(User).filter(User.email == email).first()
     if user is None:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="User not found")
     return user
+
+def get_redis():
+    return redis_client
+
+def generate_password(length: int = 16) -> str:
+    """Generate a secure password."""
+    characters = string.ascii_uppercase + string.ascii_lowercase + string.digits + string.punctuation
+    password = ''.join(secrets.choice(characters) for _ in range(length))
+    return password
+
+def get_password(length: int = 16) -> str:
+    """API endpoint to generate a password internally."""
+    password = generate_password(length)
+    return {"password is ": password}
