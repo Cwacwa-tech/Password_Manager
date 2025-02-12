@@ -63,13 +63,13 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
 def get_redis():
     return redis_client
 
-def generate_password(length: int = 16) -> str:
-    """Generate a secure password."""
-    characters = string.ascii_uppercase + string.ascii_lowercase + string.digits + string.punctuation
-    password = ''.join(secrets.choice(characters) for _ in range(length))
-    return password
+#def generate_password(length: int = 16) -> str:
+#    """Generate a secure password."""
+#    characters = string.ascii_uppercase + string.ascii_lowercase + string.digits + string.punctuation
+#    password = ''.join(secrets.choice(characters) for _ in range(length))
+#    return password
 
-def get_password(length: int = 16) -> str:
-    """API endpoint to generate a password internally."""
-    password = generate_password(length)
-    return {"password is ": password}
+#def get_password(length: int = 16) -> str:
+#    """API endpoint to generate a password internally."""
+#    password = generate_password(length)
+#    return {"password is ": password}

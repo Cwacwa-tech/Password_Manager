@@ -10,7 +10,7 @@ from redis import Redis
 
 from sqlalchemy.orm import Session
 
-from app.dependencies import get_db, get_redis, get_password  # Import the password generator function
+from app.dependencies import get_db, get_redis # get_password  # Import the password generator function
 from app.services.authentication import AuthenticationService
 from app.utils.security import verify_password, create_access_token
 
@@ -28,10 +28,10 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
     print(f"Received data: {user.dict()}", file=sys.stderr)  # Logs to stderr
 
     # If generate_password is True, generate a password
-    if user.generate_password:
-        generated_password = get_password()  # Call the password generator
-        user.master_password = generated_password["password is "]
-        print(f"Generated password: {user.master_password}", file=sys.stderr)
+    #if user.generate_password:
+    #    generated_password = get_password()  # Call the password generator
+    #    user.master_password = generated_password["password is "]
+    #    print(f"Generated password: {user.master_password}", file=sys.stderr)
 
     # Validate that master_password is provided or generated
     if not user.master_password:

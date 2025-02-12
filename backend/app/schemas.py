@@ -7,7 +7,7 @@ class UserCreate(BaseModel):
     username: str 
     email: EmailStr
     master_password: Optional[str] = Field(None, description="Leave empty to generate a password.")
-    generate_password: bool = Field(False, description="Set to True to generate a password.")
+    #generate_password: bool = Field(False, description="Set to True to generate a password.")
 
 class UserOut(BaseModel):
     id: int

@@ -1,0 +1,32 @@
+<html lang="en">
+<head>
+    <title>My popup</title>
+    <link rel="stylesheet" type="text/css" href="popup.css">
+</head>
+<body>
+<input class="secret" id="item" type="text">
+<script src="popup.js"></script>
+</body>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Generator</title>
+    <style>
+        /* Basic styling */
+        #password-display {
+            font-weight: bold;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <label for="item">Generated Password:</label>
+        <input type="text" id="generated-password" class="non-editable" />
+    </div>
+    <button id="generate-password">Generate Password</button>
+    <div id="password-display"></div>
+
+    <script type="module" src="popup.js"></script>
+</body>
+</html>
