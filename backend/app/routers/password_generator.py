@@ -4,7 +4,7 @@ import string
 
 router = APIRouter(prefix="/password", tags=["Password Generator"])
 
-def generate_password() -> str:
+def generate_password(length: int) -> str:
     """Generate a secure password with exactly 16 characters."""
     length = 16
     characters = string.ascii_uppercase + string.ascii_lowercase + string.digits + string.punctuation
