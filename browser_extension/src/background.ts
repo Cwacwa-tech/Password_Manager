@@ -28,4 +28,36 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         // Keep the response channel open until the async operation finishes
         return true;
     }
+
+    if (message.action === "login") {
+        // Forward the login request to the Backend
+        const loginData = new URLSearchParams();
+        loginData.append("username", message.email);
+        loginData.append("password", message.masterPassword);
+
+        fetch('http://localhost:8000/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: loginData.toString(),
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.access_token) {
+                // Store the token in chrome storage for later use
+                chrome.storage.local.set({ token: data.access_token }, () => {
+                    console.log("Token stored successfully.");
+                });
+
+                sendResponse({ success: true, token: data.access_token });
+            } else {
+                sendResponse({ success: false, error: data.detail || "Login failed" });
+            }
+        })
+        .catch(error => {
+            console.error("Login error:", error);
+            sendResponse({ success: false, error: "Failed to contact backend" });
+        });
+
+        return true; // Keep response channel open
+    }
 });
