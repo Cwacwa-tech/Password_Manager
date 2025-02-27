@@ -3,8 +3,6 @@ import { setBadgeText } from "./common";
 // Set the extension to always be enabled
 setBadgeText(true); // Set badge to "ON"
 
-console.log("Hello, world from popup!");
-
 // Generate password button logic
 const generatePasswordButton = document.getElementById("generate-password");
 const passwordDisplay = document.getElementById("password-display");

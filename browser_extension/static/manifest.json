@@ -1,8 +1,8 @@
 {
     "manifest_version": 3,
-    "name": "My browser Extension",
+    "name": "Password Manager",
     "version": "0.1.0",
-    "description": "My first browser extension.",
+    "description": "Password manager browser extension.",
     "action": {
       "default_popup": "popup.html"
     },
@@ -12,7 +12,8 @@
     "content_scripts": [
       {
         "matches": ["<all_urls>"],
-        "js": ["content.js"]
+        "js": ["content.js"],
+        "run_at": "document_end" 
       }
     ],
     "background": {

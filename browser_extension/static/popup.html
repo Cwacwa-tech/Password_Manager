@@ -2,12 +2,7 @@
 <head>
     <title>My popup</title>
     <link rel="stylesheet" type="text/css" href="popup.css">
-</head>
-<body>
-<input class="secret" id="item" type="text">
-<script src="popup.js"></script>
-</body>
-<head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Password Generator</title>
@@ -26,6 +21,15 @@
     </div>
     <button id="generate-password">Generate Password</button>
     <div id="password-display"></div>
+
+    <!-- Login form  -->
+    <div id="login-container">
+        <div style="padding: 10px; display: flex; flex-direction: column; gap: 10px;">
+            <input type="email" id="email" placeholder="Email" style="padding: 5px; width: 100%;" />
+            <input type="password" id="master-password" placeholder="Master Password" style="padding: 5px; width: 100%;" />
+            <button id="login-button" style="padding: 5px; width: 100%;">Login</button>
+        </div>
+    </div>
 
     <script type="module" src="popup.js"></script>
 </body>
