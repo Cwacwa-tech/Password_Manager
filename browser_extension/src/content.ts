@@ -333,8 +333,11 @@ function simulateUserInput(input: HTMLInputElement, value: string) {
     }, 100);
 }
 
-// NEW FUNCTION: Create confirmation popup
-function showConfirmationPopup(callback: (confirmed: boolean) => void) {
+//Create confirmation popup
+function showConfirmationPopup(form: HTMLElement, callback: (confirmed: boolean) => void) {
+    // Get credentials first so we can display them
+    const credentials = collectCredentials(form);
+    
     // Create popup container
     const popup = document.createElement('div');
     popup.style.position = 'fixed';
@@ -349,13 +352,45 @@ function showConfirmationPopup(callback: (confirmed: boolean) => void) {
     popup.style.display = 'flex';
     popup.style.flexDirection = 'column';
     popup.style.alignItems = 'center';
+    popup.style.minWidth = '300px';
     
-    // Create message
-    const message = document.createElement('p');
-    message.textContent = 'Save Credentials?';
-    message.style.marginBottom = '20px';
-    message.style.fontSize = '16px';
-    popup.appendChild(message);
+    // Create title
+    const title = document.createElement('h3');
+    title.textContent = 'Save Credentials?';
+    title.style.marginBottom = '15px';
+    title.style.fontSize = '18px';
+    title.style.fontWeight = 'bold';
+    popup.appendChild(title);
+    
+    // Create credentials display container
+    const credentialsContainer = document.createElement('div');
+    credentialsContainer.style.width = '100%';
+    credentialsContainer.style.marginBottom = '20px';
+    credentialsContainer.style.padding = '10px';
+    credentialsContainer.style.backgroundColor = '#f5f5f5';
+    credentialsContainer.style.borderRadius = '4px';
+    credentialsContainer.style.border = '1px solid #ddd';
+    popup.appendChild(credentialsContainer);
+    
+    // Website/domain
+    const siteInfo = document.createElement('div');
+    siteInfo.style.marginBottom = '8px';
+    siteInfo.style.fontSize = '14px';
+    siteInfo.innerHTML = `<strong>Site:</strong> ${credentials.site}`;
+    credentialsContainer.appendChild(siteInfo);
+    
+    // Username/email
+    const usernameInfo = document.createElement('div');
+    usernameInfo.style.marginBottom = '8px';
+    usernameInfo.style.fontSize = '14px';
+    usernameInfo.innerHTML = `<strong>Username:</strong> ${credentials.username || '[empty]'}`;
+    credentialsContainer.appendChild(usernameInfo);
+    
+    // Password (masked)
+    const passwordInfo = document.createElement('div');
+    passwordInfo.style.fontSize = '14px';
+    passwordInfo.innerHTML = `<strong>Password:</strong> ${'•'.repeat(Math.min(credentials.password.length, 8))}`;
+    credentialsContainer.appendChild(passwordInfo);
     
     // Create button container
     const buttonContainer = document.createElement('div');
@@ -363,15 +398,26 @@ function showConfirmationPopup(callback: (confirmed: boolean) => void) {
     buttonContainer.style.gap = '10px';
     popup.appendChild(buttonContainer);
     
+    // Create status message area (initially hidden)
+    const statusMessage = document.createElement('div');
+    statusMessage.style.marginTop = '10px';
+    statusMessage.style.padding = '5px';
+    statusMessage.style.borderRadius = '4px';
+    statusMessage.style.fontSize = '14px';
+    statusMessage.style.textAlign = 'center';
+    statusMessage.style.display = 'none';  // Initially hidden
+    popup.appendChild(statusMessage);
+    
     // Create Yes button
     const yesButton = document.createElement('button');
     yesButton.textContent = 'Yes';
     yesButton.style.padding = '8px 16px';
     yesButton.style.backgroundColor = '#4CAF50';
-    yesButton.style.border = 'none';
+    yesButton.style.border = '2px solid #000000'; // Adding a black border
     yesButton.style.borderRadius = '4px';
     yesButton.style.color = 'white';
     yesButton.style.cursor = 'pointer';
+    yesButton.style.transition = 'all 0.2s ease'; // Smooth transition for effects
     buttonContainer.appendChild(yesButton);
     
     // Create No button
@@ -379,16 +425,96 @@ function showConfirmationPopup(callback: (confirmed: boolean) => void) {
     noButton.textContent = 'No';
     noButton.style.padding = '8px 16px';
     noButton.style.backgroundColor = '#f44336';
-    noButton.style.border = 'none';
+    noButton.style.border = '2px solid #000000'; // Adding a black border
     noButton.style.borderRadius = '4px';
     noButton.style.color = 'white';
     noButton.style.cursor = 'pointer';
+    noButton.style.transition = 'all 0.2s ease'; // Smooth transition for effects
     buttonContainer.appendChild(noButton);
     
-    // Add event listeners to buttons
+    // Add visual feedback for button clicks
+    yesButton.addEventListener('mousedown', () => {
+        yesButton.style.backgroundColor = '#3B8C3E'; // Darker green when clicked
+        yesButton.style.transform = 'scale(0.95)'; // Slight shrink effect
+    });
+    
+    noButton.addEventListener('mousedown', () => {
+        noButton.style.backgroundColor = '#D32F2F'; // Darker red when clicked
+        noButton.style.transform = 'scale(0.95)'; // Slight shrink effect
+    });
+    
+    // Add hover effects for better UX
+    yesButton.addEventListener('mouseover', () => {
+        yesButton.style.backgroundColor = '#45A049';
+    });
+    
+    yesButton.addEventListener('mouseout', () => {
+        yesButton.style.backgroundColor = '#4CAF50';
+        yesButton.style.transform = 'scale(1)'; // Reset any transform
+    });
+    
+    noButton.addEventListener('mouseover', () => {
+        noButton.style.backgroundColor = '#E53935';
+    });
+    
+    noButton.addEventListener('mouseout', () => {
+        noButton.style.backgroundColor = '#f44336';
+        noButton.style.transform = 'scale(1)'; // Reset any transform
+    });
+    
+    // Handle Yes button click
     yesButton.addEventListener('click', () => {
-        document.body.removeChild(popup);
-        callback(true);
+        // Send to background script - we already collected the credentials
+        chrome.runtime.sendMessage({
+            action: 'saveCredentials',
+            data: credentials
+        }, (response) => {
+            console.log('Credentials saved status:', response);
+            
+            if (response.success) {
+                // Check if this was a duplicate
+                if (response.message === 'Password already saved!') {
+                    // Show duplicate message
+                    statusMessage.textContent = 'This password was already saved!';
+                    statusMessage.style.backgroundColor = '#FFF3CD';
+                    statusMessage.style.color = '#856404';
+                    statusMessage.style.border = '1px solid #FFEEBA';
+                    statusMessage.style.display = 'block';
+                    
+                    // Auto-close after 1.5 seconds
+                    setTimeout(() => {
+                        document.body.removeChild(popup);
+                        callback(true);
+                    }, 1500);
+                } else {
+                    // Success message
+                    statusMessage.textContent = 'Credentials saved successfully!';
+                    statusMessage.style.backgroundColor = '#D4EDDA';
+                    statusMessage.style.color = '#155724';
+                    statusMessage.style.border = '1px solid #C3E6CB';
+                    statusMessage.style.display = 'block';
+                    
+                    // Auto-close after 1.5 seconds
+                    setTimeout(() => {
+                        document.body.removeChild(popup);
+                        callback(true);
+                    }, 1500);
+                }
+            } else {
+                // Error message
+                statusMessage.textContent = 'Failed to save credentials.';
+                statusMessage.style.backgroundColor = '#F8D7DA';
+                statusMessage.style.color = '#721C24';
+                statusMessage.style.border = '1px solid #F5C6CB';
+                statusMessage.style.display = 'block';
+                
+                // Auto-close after 1.5 seconds
+                setTimeout(() => {
+                    document.body.removeChild(popup);
+                    callback(false);
+                }, 1500);
+            }
+        });
     });
     
     noButton.addEventListener('click', () => {
@@ -398,6 +524,44 @@ function showConfirmationPopup(callback: (confirmed: boolean) => void) {
     
     // Add popup to page
     document.body.appendChild(popup);
+}
+
+// Function to collect credentials from the form
+function collectCredentials(form: HTMLElement) {
+    // Get hostname for site identification
+    const site = window.location.hostname;
+    
+    // Find password field
+    const passwordInput = form.querySelector('input[type="password"]') as HTMLInputElement;
+    const password = passwordInput ? passwordInput.value : '';
+    
+    // Find username/email field using similar logic to your existing code
+    let username = '';
+    const userIdentifierSelectors = [
+        'input[type="email"]', 
+        'input[name*="email" i]', 
+        'input[id*="email" i]',
+        'input[type="text"][name*="user" i]', 
+        'input[id*="user" i]',
+        'input[name*="login" i]', 
+        'input[id*="login" i]'
+        // Add other selectors as needed
+    ];
+    
+    for (const selector of userIdentifierSelectors) {
+        const input = form.querySelector(selector) as HTMLInputElement;
+        if (input && input.value) {
+            username = input.value;
+            break;
+        }
+    }
+    
+    return {
+        site,
+        username,
+        password,
+        timestamp: new Date().toISOString()
+    };
 }
 
 // Function to check if all required form inputs are filled
@@ -464,7 +628,7 @@ function setupSignupFormSubmitHandler(form: HTMLElement) {
                 event.stopPropagation();
                 
                 // Show confirmation popup
-                showConfirmationPopup((confirmed) => {
+                showConfirmationPopup(form,(confirmed) => {
                     if (confirmed) {
                         console.log("Password saved");
                     } else {
@@ -485,7 +649,7 @@ function setupSignupFormSubmitHandler(form: HTMLElement) {
                 event.stopPropagation();
                 
                 // Show confirmation popup
-                showConfirmationPopup((confirmed) => {
+                showConfirmationPopup(form, (confirmed) => {
                     if (confirmed) {
                         console.log("Password saved");
                     } else {
