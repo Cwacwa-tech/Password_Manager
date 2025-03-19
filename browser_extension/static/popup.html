@@ -5,29 +5,23 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Password Manager</title>
-
+    <title>Password Generator</title>
     <style>
-        /* Maintain consistent form width */
-        body {
-            min-width: 200px; /* Adjust this value to match your original popup width */
-        }
-        
-        #login-container {
-            width: 100%;
-        }
-    
-
-        .heading {
-            text-align: center;
-            margin: 10px 0;
-            font-size: 18px;
+        /* Basic styling */
+        #password-display {
             font-weight: bold;
+            margin-top: 10px;
         }
     </style>
 </head>
 <body>
-    <h2 class="heading">Password Manager</h2>
+    <div>
+        <label for="item">Generated Password:</label>
+        <input type="text" id="generated-password" class="non-editable" />
+    </div>
+    <button id="generate-password">Generate Password</button>
+    <div id="password-display"></div>
+
     <!-- Login form  -->
     <div id="login-container">
         <div style="padding: 10px; display: flex; flex-direction: column; gap: 10px;">
