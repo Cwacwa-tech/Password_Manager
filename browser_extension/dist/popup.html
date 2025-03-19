@@ -1,0 +1,36 @@
+<html lang="en">
+<head>
+    <title>My popup</title>
+    <link rel="stylesheet" type="text/css" href="popup.css">
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Generator</title>
+    <style>
+        /* Basic styling */
+        #password-display {
+            font-weight: bold;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <label for="item">Generated Password:</label>
+        <input type="text" id="generated-password" class="non-editable" />
+    </div>
+    <button id="generate-password">Generate Password</button>
+    <div id="password-display"></div>
+
+    <!-- Login form  -->
+    <div id="login-container">
+        <div style="padding: 10px; display: flex; flex-direction: column; gap: 10px;">
+            <input type="email" id="email" placeholder="Email" style="padding: 5px; width: 100%;" />
+            <input type="password" id="master-password" placeholder="Master Password" style="padding: 5px; width: 100%;" />
+            <button id="login-button" style="padding: 5px; width: 100%;">Login</button>
+        </div>
+    </div>
+
+    <script type="module" src="popup.js"></script>
+</body>
+</html>

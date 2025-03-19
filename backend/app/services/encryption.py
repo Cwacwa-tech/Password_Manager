@@ -1,4 +1,5 @@
 # backend/app/services/encryption.py
+<<<<<<< HEAD
 
 from app.models import User
 
@@ -130,3 +131,19 @@ class EncryptionService:
         # In a real implementation, you would also return or store the salt
         # since it's needed to regenerate the same key later
         return key
+=======
+from cryptography.fernet import Fernet
+
+class EncryptionService:
+    def __init__(self):
+        self.key = Fernet.generate_key()
+        self.cipher_suite = Fernet(self.key)
+    
+    def encrypt_password(self, password: str) -> bytes:
+        """ Encrypt plain text password """
+        return self.cipher_suite.encrypt(password.encode())
+    
+    def decrypt_password(self, encrypted_password: bytes) -> str:
+        """ Decrypt an encrypted password """
+        return self.cipher_suite.decrypt(encrypted_password).decode()
+>>>>>>> 99e95de555d3dbb52fc88c0f4939581a0a765814

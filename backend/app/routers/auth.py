@@ -4,6 +4,7 @@ import sys
 
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from app.schemas import UserCreate, UserOut, UserLogin, Token, UserRegistrationResponse
+
 from app.models import User
 
 from redis import Redis
@@ -22,6 +23,7 @@ router = APIRouter(
     prefix="/auth",
     tags=["auth"]
 )
+
 
 @router.post("/register", response_model=UserRegistrationResponse)
 def register(user: UserCreate, db: Session = Depends(get_db)):

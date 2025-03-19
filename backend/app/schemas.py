@@ -1,6 +1,10 @@
 # backend/app/schemas.py
 from pydantic import BaseModel, EmailStr, Field
+<<<<<<< HEAD
 from typing import Optional, List, Dict, Any
+=======
+from typing import Optional
+>>>>>>> 99e95de555d3dbb52fc88c0f4939581a0a765814
 import datetime
 
 class UserCreate(BaseModel):
@@ -16,6 +20,7 @@ class UserOut(BaseModel):
     class Config:
         orm_mode = True
 
+<<<<<<< HEAD
 class UserRegistrationResponse(BaseModel):
     user: UserOut
     recovery_codes: List[str]
@@ -24,11 +29,14 @@ class UserRegistrationResponse(BaseModel):
     class Config:
         orm_mode = True
 
+=======
+>>>>>>> 99e95de555d3dbb52fc88c0f4939581a0a765814
 class VaultEntryCreate(BaseModel):
     site: str
     username: str
     password: str  # Plaintext; will be encrypted
 
+<<<<<<< HEAD
 class VaultEntryAddResponse(BaseModel):
     id: int
     site: str
@@ -38,11 +46,16 @@ class VaultEntryAddResponse(BaseModel):
     class Config:
         orm_mode = True
 
+=======
+>>>>>>> 99e95de555d3dbb52fc88c0f4939581a0a765814
 class VaultEntryOut(BaseModel):
     id: int
     site: str
     username: str
+<<<<<<< HEAD
     password: Optional[str] = None 
+=======
+>>>>>>> 99e95de555d3dbb52fc88c0f4939581a0a765814
     last_modified: datetime.datetime
 
     class Config:
@@ -61,6 +74,7 @@ class UserLogin(BaseModel):
 
 class SharedUserCreate(BaseModel):
     vault_entry_id: int
+<<<<<<< HEAD
     user_email: EmailStr
 
     class Config:
@@ -92,3 +106,9 @@ class ConflictResolution(BaseModel):
     item_id: int
     resolution_strategy: str = Field(..., description="Either 'server' or 'client'")
     client_data: Optional[Dict[str, Any]] = None
+=======
+    user_id: int
+
+    class Config:
+        orm_mode = True
+>>>>>>> 99e95de555d3dbb52fc88c0f4939581a0a765814

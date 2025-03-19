@@ -1,3 +1,4 @@
+
 # backend/app/routers/vault.py
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.orm import Session
@@ -12,6 +13,7 @@ from datetime import datetime, timezone
 import base64
 from typing import List
 from fastapi.security import OAuth2PasswordBearer
+
 import json
 
 router = APIRouter(
@@ -44,6 +46,7 @@ def add_password(entry: VaultEntryCreate, current_user: User = Depends(get_curre
 
     encryption_service = EncryptionService(master_key=encryption_key_string)
     encrypted_password = encryption_service.encrypt_vault_item(entry.password)
+
     db_entry = VaultEntry(
         user_email=current_user.email,
         site=entry.site,
@@ -102,6 +105,7 @@ def get_passwords(current_user: User = Depends(get_current_user), db: Session = 
     db_entries = db.query(VaultEntry).filter(VaultEntry.user_email == current_user.email).all()
     shared_entries = db.query(VaultEntry).join(SharedUser).filter(SharedUser.user_email == current_user.email).all()
     return db_entries
+
 """
 
 """
@@ -111,6 +115,7 @@ async def get_passwords(website: str, db: Session = Depends(get_db)):
     passwords = db.query(Password).filter(Password.website == website).all()
     return passwords
 """
+
 
 @router.post("/share", response_model=SharedUserCreate)
 def share_entry(shared_user: SharedUserCreate, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):

@@ -1,21 +1,33 @@
+<<<<<<< HEAD
 from sqlalchemy import Column, Integer, String, LargeBinary, DateTime, ForeignKey, Table, Boolean, Enum, Text, func, UniqueConstraint
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import UUID, INET
 from datetime import datetime, timezone
 import uuid
+=======
+from sqlalchemy import Column, Integer, String, LargeBinary, DateTime, ForeignKey, Table
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import relationship
+import datetime
+>>>>>>> 99e95de555d3dbb52fc88c0f4939581a0a765814
 
 Base = declarative_base()
 
 class User(Base):
     __tablename__ = "users"
     
+<<<<<<< HEAD
     id = Column(Integer, primary_key=True, autoincrement=True)  # Primary key
+=======
+    id = Column(Integer, primary_key=True, autoincrement=True)  # Added primary key
+>>>>>>> 99e95de555d3dbb52fc88c0f4939581a0a765814
     email = Column(String, unique=True, index=True)
     username = Column(String, nullable=False, unique=True)
     master_password_hash = Column(String)
     totp_secret = Column(String)
     biometric_data = Column(LargeBinary, nullable=True)  # Make nullable if it's optional
+<<<<<<< HEAD
     key_derivation_salt = Column(LargeBinary, nullable=False)
     encryption_key = Column(LargeBinary, nullable=True)
     is_totp_enabled = Column(Boolean, default=False)
@@ -32,6 +44,10 @@ class User(Base):
     devices = relationship("UserDevice", back_populates="user", cascade="all, delete-orphan")
     login_attempts = relationship("LoginAttempt", back_populates="user", cascade="all, delete-orphan")
     recovery_codes = relationship("RecoveryCode", back_populates="user", cascade="all, delete-orphan")
+=======
+    vault_entries = relationship("VaultEntry", back_populates="owner")
+    shared_entries = relationship("SharedUser", back_populates="shared_with")
+>>>>>>> 99e95de555d3dbb52fc88c0f4939581a0a765814
 
 class VaultEntry(Base):
     __tablename__ = "vault_entries"
@@ -40,6 +56,7 @@ class VaultEntry(Base):
     user_email = Column(String, ForeignKey("users.email"), index=True)
     site = Column(String)
     username = Column(String)
+<<<<<<< HEAD
     encrypted_password = Column(String)
     last_modified = Column(DateTime, default=datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc))  # Automatically update on change
     last_modified_by = Column(String)  # This is the device_id that made the last modification
@@ -50,6 +67,12 @@ class VaultEntry(Base):
 
     owner = relationship("User", back_populates="vault_entries")
     shared_users = relationship("SharedUser", back_populates="vault_entry",  cascade="all, delete")
+=======
+    encrypted_password = Column(LargeBinary)
+    last_modified = Column(DateTime, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)  # Automatically update on change
+    owner = relationship("User", back_populates="vault_entries")
+    shared_users = relationship("SharedUser", back_populates="vault_entry")
+>>>>>>> 99e95de555d3dbb52fc88c0f4939581a0a765814
 
 class SharedUser(Base):
     __tablename__ = "shared_users"
@@ -57,6 +80,7 @@ class SharedUser(Base):
     id = Column(Integer, primary_key=True, index=True)
     vault_entry_id = Column(Integer, ForeignKey('vault_entries.id'), nullable=False)
     user_email = Column(String, ForeignKey('users.email'), nullable=False)
+<<<<<<< HEAD
     
     shared_with = relationship("User", back_populates="shared_entries")
     vault_entry = relationship("VaultEntry", back_populates="shared_users")
@@ -135,3 +159,7 @@ class RecoveryCode(Base):
     __table_args__ = (
         UniqueConstraint('user_email', 'code', name='uq_user_recovery_code'),
     )
+=======
+    shared_with = relationship("User", back_populates="shared_entries")
+    vault_entry = relationship("VaultEntry", back_populates="shared_users")
+>>>>>>> 99e95de555d3dbb52fc88c0f4939581a0a765814
