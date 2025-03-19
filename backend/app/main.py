@@ -23,22 +23,12 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-=======
-from fastapi import FastAPI
-from app.routers import auth, vault, sync, password_generator
-
-app = FastAPI(title="Password Manager API")
->>>>>>> 99e95de555d3dbb52fc88c0f4939581a0a765814
-
 # Include the routers
 app.include_router(auth.router)
 app.include_router(vault.router)
 app.include_router(sync.router)
 app.include_router(password_generator.router)
-<<<<<<< HEAD
 
 @app.get("/health")
 async def health_check():
     return {"status": "healthy"}
-=======
->>>>>>> 99e95de555d3dbb52fc88c0f4939581a0a765814

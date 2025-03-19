@@ -1,5 +1,4 @@
 # backend/app/services/synchronization.py
-<<<<<<< HEAD
 from datetime import datetime, timezone
 import uuid
 from typing import List, Dict, Any, Optional
@@ -27,7 +26,6 @@ class SyncService:
         # For now, this is just a placeholder logic
         # Implement the synchronization logic
         return True
-<<<<<<< HEAD
 
 class SynchronizationService:
     def __init__(self, db: Session, redis_client: Redis):
@@ -214,5 +212,3 @@ class SynchronizationService:
             "last_sync": sync_metadata.last_sync.isoformat(),
             "sync_token": sync_metadata.sync_token
         }
-=======
->>>>>>> 99e95de555d3dbb52fc88c0f4939581a0a765814

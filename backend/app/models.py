@@ -19,12 +19,6 @@ class User(Base):
     
 <<<<<<< HEAD
     id = Column(Integer, primary_key=True, autoincrement=True)  # Primary key
-=======
-    id = Column(Integer, primary_key=True, autoincrement=True)  # Added primary key
->>>>>>> 99e95de555d3dbb52fc88c0f4939581a0a765814
-    email = Column(String, unique=True, index=True)
-    username = Column(String, nullable=False, unique=True)
-    master_password_hash = Column(String)
     totp_secret = Column(String)
     biometric_data = Column(LargeBinary, nullable=True)  # Make nullable if it's optional
 <<<<<<< HEAD
@@ -44,10 +38,6 @@ class User(Base):
     devices = relationship("UserDevice", back_populates="user", cascade="all, delete-orphan")
     login_attempts = relationship("LoginAttempt", back_populates="user", cascade="all, delete-orphan")
     recovery_codes = relationship("RecoveryCode", back_populates="user", cascade="all, delete-orphan")
-=======
-    vault_entries = relationship("VaultEntry", back_populates="owner")
-    shared_entries = relationship("SharedUser", back_populates="shared_with")
->>>>>>> 99e95de555d3dbb52fc88c0f4939581a0a765814
 
 class VaultEntry(Base):
     __tablename__ = "vault_entries"
@@ -80,7 +70,6 @@ class SharedUser(Base):
     id = Column(Integer, primary_key=True, index=True)
     vault_entry_id = Column(Integer, ForeignKey('vault_entries.id'), nullable=False)
     user_email = Column(String, ForeignKey('users.email'), nullable=False)
-<<<<<<< HEAD
     
     shared_with = relationship("User", back_populates="shared_entries")
     vault_entry = relationship("VaultEntry", back_populates="shared_users")
@@ -159,7 +148,3 @@ class RecoveryCode(Base):
     __table_args__ = (
         UniqueConstraint('user_email', 'code', name='uq_user_recovery_code'),
     )
-=======
-    shared_with = relationship("User", back_populates="shared_entries")
-    vault_entry = relationship("VaultEntry", back_populates="shared_users")
->>>>>>> 99e95de555d3dbb52fc88c0f4939581a0a765814
