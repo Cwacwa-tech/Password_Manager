@@ -3,30 +3,6 @@ import { setBadgeText } from "./common";
 // Set the extension to always be enabled
 setBadgeText(true); // Set badge to "ON"
 
-// Generate password button logic
-const generatePasswordButton = document.getElementById("generate-password");
-const passwordDisplay = document.getElementById("password-display");
-const generatedPasswordInput = document.getElementById("generated-password") as HTMLInputElement;
-
-// Check if elements exist before using them
-if (generatePasswordButton && passwordDisplay && generatedPasswordInput) {
-    generatePasswordButton.addEventListener("click", () => {
-        // Send message to background to generate a password
-        chrome.runtime.sendMessage(
-            { action: "generate_password" },
-            (response) => {
-                if (response?.password) {
-                    generatedPasswordInput.value = response.password; // Autofill the input field
-                } else if (response?.error) {
-                    passwordDisplay.textContent = "Failed to generate password.";
-                }
-            }
-        );
-    });
-} else {
-    console.error("Elements not found: generatePasswordButton, passwordDisplay, or generatedPasswordInput.");
-}
-
 // Login form logic
 document.addEventListener("DOMContentLoaded", () => {
     const loginButton = document.getElementById("login-button");

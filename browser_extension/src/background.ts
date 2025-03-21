@@ -220,4 +220,40 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         // Required for async response
         return true;
     }
+
+    if (message.action === "getCredentials") {
+        const site = message.site;
+        
+        // Get auth token first, then fetch credentials
+        getAuthToken()
+          .then(token => {
+            return fetch(`http://localhost:8000/vault/passwords?site=${encodeURIComponent(site)}`, {
+              method: 'GET',
+              headers: {
+                'Authorization': `Bearer ${token}`
+              }
+            });
+          })
+          .then(response => {
+            if (!response.ok) {
+              throw new Error(`Server returned ${response.status}: ${response.statusText}`);
+            }
+            return response.json();
+          })
+          .then(data => {
+            sendResponse({ 
+              success: true, 
+              credentials: data 
+            });
+          })
+          .catch(error => {
+            console.error("Error fetching credentials:", error);
+            sendResponse({ 
+              success: false, 
+              error: error.message 
+            });
+          });
+        
+        return true; // Keep channel open for async response
+      }
 });
