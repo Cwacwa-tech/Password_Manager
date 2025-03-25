@@ -1,4 +1,5 @@
 import {showConfirmationPopup, showPasswordSuggestionPopup, showCredentialSelectionPopup} from './popup_utils';
+import {retrieveSavedCredentials} from './credentials_utils';
 
 // Function to log form detection
 function logFormDetection(formType: string): void {
@@ -211,25 +212,8 @@ function handleLoginForm(elem: HTMLElement) {
         setupPasswordFieldListener(elem);
       }
     });
-  }
-
-// New function to retrieve saved credentials for the current site
-function retrieveSavedCredentials(callback: (credentials: any[] | null) => void) {
-    const currentSite = window.location.hostname;
-
-    chrome.runtime.sendMessage(
-        { action: "getCredentials", site: currentSite },
-        (response) => {
-        if (response?.success && response.credentials) {
-            callback(response.credentials);
-        } else {
-            console.error("Failed to retrieve credentials:", response?.error);
-            callback(null);
-        }
-        }
-    );
 }
-  
+
 // Add password field click listener for signup forms
 function setupPasswordFieldListener(form: HTMLElement) {
 const passwordFields = form.querySelectorAll('input[type="password"]');

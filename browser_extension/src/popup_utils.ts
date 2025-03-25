@@ -1,7 +1,5 @@
-// Import any necessary functions that weren't included in your snippet
-// For example, we need the collectCredentials function
-import { collectCredentials, autofillCredentials } from './credentials_utils'; // Adjust the import path as needed
-import { simulateUserInput } from './common'; // Adjust the import path as needed
+import { collectCredentials, autofillCredentials } from './credentials_utils';
+import { simulateUserInput } from './common';
 
 /**
  * Shows a confirmation popup to save credentials

@@ -65,3 +65,20 @@ export function autofillCredentials(form: HTMLElement, username: string, passwor
         }
     }
 }
+
+// function to retrieve saved credentials for the current site
+export function retrieveSavedCredentials(callback: (credentials: any[] | null) => void) {
+    const currentSite = window.location.hostname;
+
+    chrome.runtime.sendMessage(
+        { action: "getCredentials", site: currentSite },
+        (response) => {
+        if (response?.success && response.credentials) {
+            callback(response.credentials);
+        } else {
+            console.error("Failed to retrieve credentials:", response?.error);
+            callback(null);
+        }
+        }
+    );
+}
