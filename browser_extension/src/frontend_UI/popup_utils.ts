@@ -1,5 +1,5 @@
-import { collectCredentials, autofillCredentials } from './credentials_utils';
-import { simulateUserInput } from './common';
+import { collectCredentials, autofillCredentials } from '../core_services/credentials_utils';
+import { simulateUserInput } from '../common';
 
 /**
  * Shows a confirmation popup to save credentials

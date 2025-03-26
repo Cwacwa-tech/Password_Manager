@@ -1,5 +1,5 @@
-import {showConfirmationPopup, showPasswordSuggestionPopup, showCredentialSelectionPopup} from './popup_utils';
-import {retrieveSavedCredentials} from './credentials_utils';
+import {showConfirmationPopup, showPasswordSuggestionPopup, showCredentialSelectionPopup} from './frontend_UI/popup_utils';
+import {retrieveSavedCredentials} from './core_services/credentials_utils';
 
 // Function to log form detection
 function logFormDetection(formType: string): void {

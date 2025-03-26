@@ -1,4 +1,4 @@
-import {simulateUserInput} from './common'
+import {simulateUserInput} from '../common'
 
 // Function to collect credentials from the form
 export function collectCredentials(form: HTMLElement) {
