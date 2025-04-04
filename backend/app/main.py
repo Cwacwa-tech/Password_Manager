@@ -1,7 +1,6 @@
 # backend/app/main.py
-<<<<<<< HEAD
 from fastapi import FastAPI, Depends
-from app.routers import auth, vault, sync, password_generator
+from app.routers import auth, vault, sync, password_generator, webauthn
 from app.models import Base
 
 
@@ -28,6 +27,7 @@ app.include_router(auth.router)
 app.include_router(vault.router)
 app.include_router(sync.router)
 app.include_router(password_generator.router)
+app.include_router(webauthn.router)
 
 @app.get("/health")
 async def health_check():
