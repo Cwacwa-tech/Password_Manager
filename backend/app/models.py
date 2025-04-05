@@ -136,3 +136,19 @@ class RecoveryCode(Base):
     __table_args__ = (
         UniqueConstraint('user_email', 'code', name='uq_user_recovery_code'),
     )
+    
+
+class WebAuthnCredential(Base):
+    """
+    Model to store WebAuthn credentials
+    """
+    __tablename__ = "webauthn_credentials"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
+    credential_id = Column(LargeBinary, nullable=False)
+    public_key = Column(LargeBinary, nullable=False)
+    sign_count = Column(Integer, default=0)
+
+    # Relationship to User model
+    user = relationship("User", back_populates="webauthn_credentials")
