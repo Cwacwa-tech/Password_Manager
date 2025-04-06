@@ -26,16 +26,9 @@ router = APIRouter(
 
 
 @router.post("/register", response_model=UserRegistrationResponse)
-def register(user: UserCreate, db: Session = Depends(get_db)):
+async def register(user: UserCreate, db: Session = Depends(get_db)):
     print(f"Received data: {user.dict()}", file=sys.stderr)  # Logs to stderr
-
-    # If generate_password is True, generate a password
-    #if user.generate_password:
-    #    generated_password = get_password()  # Call the password generator
-    #    user.master_password = generated_password["password is "]
-    #    print(f"Generated password: {user.master_password}", file=sys.stderr)
-
-    # Validate that master_password is provided or generated
+    
     if not user.master_password:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -47,7 +40,7 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
     return db_user
 
 @router.post("/login", response_model=Token)
-def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db), redis_client: Redis = Depends(get_redis)):
+async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db), redis_client: Redis = Depends(get_redis)):
     user = db.query(User).filter(User.email == form_data.username).first()
     if not user:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
@@ -65,7 +58,7 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
 
 
 @router.delete("/delete-account", status_code=status.HTTP_204_NO_CONTENT)
-def delete_account(current_user: User = Depends(get_current_user), db: Session = Depends(get_db), redis_client: Redis = Depends(get_redis)):
+async def delete_account(current_user: User = Depends(get_current_user), db: Session = Depends(get_db), redis_client: Redis = Depends(get_redis)):
     """
     Delete the user's account. 
     This will remove the user from the database and invalidate any active sessions.
@@ -91,7 +84,7 @@ def delete_account(current_user: User = Depends(get_current_user), db: Session =
 
 
 @router.get("/validate-session")
-def validate_session(
+async def validate_session(
     current_user: User = Depends(get_current_user)
 ):
     """

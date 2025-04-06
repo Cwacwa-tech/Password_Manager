@@ -32,14 +32,14 @@ router = APIRouter(
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
 
 @router.post("/")
-def sync_vault(vault_data: dict, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+async def sync_vault(vault_data: dict, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
     sync_service = SyncService(db)
     if sync_service.sync_vault(token, vault_data):
         return {"message": "Vault synchronized successfully"}
     raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Failed to synchronize vault")
 
 @router.post("/register-device", response_model=DeviceRegistrationResponse)
-def register_device(
+async def register_device(
     device_data: DeviceRegistration,
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
@@ -55,7 +55,7 @@ def register_device(
     }
 
 @router.post("/pull", response_model=SyncResponse)
-def pull_changes(
+async def pull_changes(
     sync_data: SyncRequest,
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
@@ -88,7 +88,7 @@ def pull_changes(
 
 
 @router.post("/push", response_model=Dict[str, Any])
-def push_changes(
+async def push_changes(
     sync_data: SyncRequest,
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
@@ -114,7 +114,7 @@ def push_changes(
     }
 
 @router.post("/resolve-conflict", response_model=Dict[str, Any])
-def resolve_conflict(
+async def resolve_conflict(
     resolution_data: ConflictResolution,
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
@@ -136,7 +136,7 @@ def resolve_conflict(
     return result
 
 @router.get("/state", response_model=Dict[str, Any])
-def get_sync_state(
+async def get_sync_state(
     device_id: str,
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),

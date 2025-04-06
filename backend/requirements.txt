@@ -31,3 +31,4 @@ uvicorn==0.22.0
 pydantic[email]
 email-validator
 argon2_cffi
+cbor2
